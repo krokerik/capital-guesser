@@ -1,9 +1,12 @@
 h1{
-  color: green;
+	color: green;
 }
 a{
-  color: blue;
+	color: blue;
 }
 a:hover{
-  text-decoration: none;
+	text-decoration: none;
+}
+table, th, td {
+	border: 1px solid black;
 }
