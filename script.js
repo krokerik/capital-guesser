@@ -208,15 +208,16 @@ var countries = [
 ]
 window.onload = function(){
 	for (var pair in countries) {
-		var arg1, arg2;
+		var shorter, longer;
 		if(countries[pair].name.length>=countries[pair].capital.length) {
-			arg1 = countries[pair].name.toUpperCase();
-			arg2 = countries[pair].capital.toUpperCase();
+			longer  = countries[pair].name.toUpperCase();
+			shorter = countries[pair].capital.toUpperCase();
 		} else {
-			arg1 = countries[pair].capital.toUpperCase();
-			arg2 = countries[pair].name.toUpperCase();
+			longer  = countries[pair].capital.toUpperCase();
+			shorter = countries[pair].name.toUpperCase();
 		}
-		countries[pair].result = needlemanWunsch(arg1,arg2);
+		countries[pair].needlemanWunsch = needlemanWunsch(shorter,longer);
+		countries[pair].hamming = hammingDistance(longer,shorter);
 	}
 
 	countries.sort(resCompare);
@@ -225,15 +226,18 @@ window.onload = function(){
 	for (var pair in countries) {
 		var row = document.createElement("tr");
 		var pos = document.createElement("td");
-		var score = document.createElement("td");
+		var needlemanWunschScore = document.createElement("td");
+		var hamming = document.createElement("td");
 		var country = document.createElement("td");
 		var capital = document.createElement("td");
 		pos.appendChild(document.createTextNode(pair));
-		score.appendChild(document.createTextNode(countries[pair].result));
+		needlemanWunschScore.appendChild(document.createTextNode(countries[pair].needlemanWunsch));
+		hamming.appendChild(document.createTextNode(countries[pair].hamming));
 		country.appendChild(document.createTextNode(countries[pair].name));
 		capital.appendChild(document.createTextNode(countries[pair].capital));
 		row.appendChild(pos);
-		row.appendChild(score);
+		row.appendChild(needlemanWunschScore);
+		row.appendChild(hamming);
 		row.appendChild(country);
 		row.appendChild(capital);
 		table.appendChild(row);
@@ -241,7 +245,7 @@ window.onload = function(){
 }
 
 function resCompare(a,b) {
-	return a.result - b.result;
+	return a.needlemanWunsch - b.needlemanWunsch;
 }
 
 function needlemanWunsch(reference, candidate){
@@ -293,4 +297,17 @@ function needlemanWunsch(reference, candidate){
 		min = matrix[matrix.length-1][i]<min?matrix[matrix.length-1][i]:min;
 	}
 	return min;
+}
+
+//Only works on strings of equal length normally
+function hammingDistance(longer,shorter) {
+	var sum = 0;
+
+	for(var i=0; i<shorter.length; i++) {
+		if(longer[i]!=shorter[i]) {
+			sum++;
+		}
+	}
+
+	return sum;
 }
